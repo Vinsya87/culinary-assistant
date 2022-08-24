@@ -21,7 +21,7 @@ load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '(*@ko#!g2vtst3w82lufrq$zwv1@pp4_dw#0$=zf!l-f%mtl*e'
+SECRET_KEY = os.getenv('SECRET_KEY', default='12345')
 
 DEBUG = True
 

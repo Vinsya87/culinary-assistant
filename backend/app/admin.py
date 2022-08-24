@@ -12,8 +12,12 @@ class RecipeAmountAdmin(admin.TabularInline):
 
 
 class RecipesAdmin(admin.ModelAdmin):
+    def favorite_recipe(self, obj):
+        return Favorite.objects.filter(recipe=obj).count()
+    favorite_recipe.short_description = 'Количество добавлений в избранное'
+
     def ingredient_name(self, obj):
-        a = obj.ingredients.values_list('name')
+        a = obj.ingredients.values_list('name', 'measurement_unit')
         return list(chain.from_iterable(a))
     ingredient_name.short_description = 'Ингредиент'
 
@@ -30,11 +34,11 @@ class RecipesAdmin(admin.ModelAdmin):
       'author', 'text',
       'image', 'cooking_time',
       'tag_name', 'ingredient_name',
-      'pub_date')
-    search_fields = ('text', 'name', 'author',)
-    list_filter = ('author',)
-    filter_horizontal = ['tags']
-    inlines = (RecipeAmountAdmin,)
+      'pub_date', 'favorite_recipe')
+    search_fields = ('name', 'author__username', 'tags__name')
+    # list_filter = ('author',)
+    # filter_horizontal = ['tags']
+    # inlines = (RecipeAmountAdmin,)
     # Это свойство сработает для всех колонок: где пусто — там будет эта строка
     empty_value_display = '-пусто-'
 
@@ -43,11 +47,19 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     empty_value_display = '-пусто-'
     list_filter = ('name',)
+    search_fields = ('name',)
+
+
+class TagsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'slug', 'color')
+    empty_value_display = '-пусто-'
+    list_filter = ('name',)
+    search_fields = ('name',)
 
 
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipesAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, TagsAdmin)
 admin.site.register(Favorite)
 admin.site.register(Subscription)
 admin.site.register(Shopping)

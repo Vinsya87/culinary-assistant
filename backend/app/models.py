@@ -32,12 +32,6 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=256, unique=True)
     measurement_unit = models.CharField(max_length=256, unique=False)
-    # measurement_unit = models.ManyToManyField(
-    #     Unit,
-    #     blank=True,
-    #     related_name='Units',
-    #     verbose_name='Единицу измерения',
-    #     help_text='Выберите единицу измерения')
 
     class Meta:
         verbose_name = 'Ингредиент'
@@ -70,21 +64,23 @@ class Recipe(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
+        blank=False,
         through='RecipeIngredientAmount',
         related_name='recipes'
     )
     tags = models.ManyToManyField(
         Tag,
-        blank=True,
+        blank=False,
         related_name='recipes_tag',
         verbose_name='Тег',
         help_text='Выберите Теги'
     )
-    cooking_time = models.IntegerField(
-        default=0,
-        blank=True,
+    cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
-        validators=[MinValueValidator(1)])
+        validators=(
+            MinValueValidator(
+                1, message='Должно быть больше 1'),),
+    )
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True
