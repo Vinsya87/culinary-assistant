@@ -50,6 +50,7 @@ class Recipe(models.Model):
         on_delete=models.SET_DEFAULT,
         default='Без имени',
         verbose_name='Автор',
+        related_name='recipes_author'
     )
     image = models.ImageField(
         'Изображение',
@@ -146,7 +147,7 @@ class Favorite(models.Model):
         verbose_name_plural = 'Избранные'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe'], name="unique_favorite")
+                fields=['user', 'recipe'], name='unique_favorite')
         ]
 
 
@@ -173,7 +174,7 @@ class Subscription(models.Model):
         verbose_name_plural = 'Подписчики'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name="unique_followers")
+                fields=['user', 'author'], name='unique_followers')
         ]
 
     @property
@@ -204,5 +205,5 @@ class Shopping(models.Model):
         verbose_name_plural = 'Список покупок'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe'], name="unique_shopping")
+                fields=['user', 'recipe'], name='unique_shopping')
         ]

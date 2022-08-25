@@ -3,7 +3,6 @@ from app.models import (Favorite, Ingredient, Recipe, RecipeIngredientAmount,
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 from users.models import User
 
 
@@ -40,10 +39,10 @@ class IngredientListSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(source="ingredient.id")
-    name = serializers.ReadOnlyField(source="ingredient.name")
+    id = serializers.CharField(source='ingredient.id')
+    name = serializers.ReadOnlyField(source='ingredient.name')
     measurement_unit = serializers.ReadOnlyField(
-        source="ingredient.measurement_unit")
+        source='ingredient.measurement_unit')
 
     class Meta:
         model = RecipeIngredientAmount
@@ -103,7 +102,8 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         cooking_time = data['cooking_time']
         if int(cooking_time) <= 0:
             raise serializers.ValidationError({
-                'cooking_time': 'Время приготовления рецепта не может быть 0!'
+                'cooking_time':
+                'Проверьте время приготовления рецепта! (меньше 1)'
             })
         return data
 
@@ -121,10 +121,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         RecipeIngredientAmount.objects.bulk_create(ingredients_result)
 
     def create(self, validated_data):
-        # Уберем список ingredients из словаря validated_data и сохраним его
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        tags = self.initial_data.get("tags")
+        tags = self.initial_data.get('tags')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         self.create_ingredients(ingredients, recipe)
@@ -198,7 +197,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         required=True)
 
     def create(self, validated_data):
-        password = validated_data.pop("password")
+        password = validated_data.pop('password')
         user = User(**validated_data)
         user.set_password(password)
         user.save()
@@ -209,7 +208,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
         fields = (
             'email', 'id', 'username', 'first_name', 'last_name', 'password')
         extra_kwargs = {
-            "password": {"write_only": True},
+            'password': {'write_only': True},
         }
 
 
@@ -228,10 +227,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Favorite
-        fields = ["id", "name", "image", "cooking_time"]
-        validators = UniqueTogetherValidator(
-            queryset=Favorite.objects.all(), fields=("user", "recipes")
-        )
+        fields = ['id', 'name', 'image', 'cooking_time']
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
@@ -251,11 +247,11 @@ class RecipesSer(serializers.ModelSerializer):
 
 class SubscriptionsUserSerializer(serializers.ModelSerializer):
     """Получения списка авторов и их рецептов на кого подписан пользователь"""
-    email = serializers.EmailField(read_only=True, source="author.email")
-    id = serializers.ReadOnlyField(source="author.id")
-    username = serializers.ReadOnlyField(source="author.username")
-    first_name = serializers.ReadOnlyField(source="author.first_name")
-    last_name = serializers.ReadOnlyField(source="author.last_name")
+    email = serializers.EmailField(read_only=True, source='author.email')
+    id = serializers.ReadOnlyField(source='author.id')
+    username = serializers.ReadOnlyField(source='author.username')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.IntegerField(source='recipe_count')
     is_subscribed = serializers.SerializerMethodField(read_only=True)
@@ -270,8 +266,7 @@ class SubscriptionsUserSerializer(serializers.ModelSerializer):
             )
 
     def get_recipes(self, obj):
-        recipe = Recipe.objects.filter(author=obj.author)
-        # recipe = obj.author.following.all() ???
+        recipe = obj.author.recipes_author.all()
         return RecipesSer(recipe, many=True).data
 
     def get_is_subscribed(self, obj):

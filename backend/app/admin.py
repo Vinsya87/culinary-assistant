@@ -36,10 +36,9 @@ class RecipesAdmin(admin.ModelAdmin):
       'tag_name', 'ingredient_name',
       'pub_date', 'favorite_recipe')
     search_fields = ('name', 'author__username', 'tags__name')
-    # list_filter = ('author',)
-    # filter_horizontal = ['tags']
-    # inlines = (RecipeAmountAdmin,)
-    # Это свойство сработает для всех колонок: где пусто — там будет эта строка
+    list_filter = ('author',)
+    filter_horizontal = ['tags']
+    inlines = (RecipeAmountAdmin,)
     empty_value_display = '-пусто-'
 
 

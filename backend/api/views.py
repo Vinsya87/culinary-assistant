@@ -40,15 +40,11 @@ class CreateDeleteShopping(mixins.CreateModelMixin, mixins.DestroyModelMixin,
         из списка покупок
         """
         recipe = get_object_or_404(Recipe, id=self.kwargs.get('shop_id'))
-        if Shopping.objects.filter(user=self.request.user,
-                                   recipe=recipe).exists():
-            Shopping.objects.filter(user=self.request.user,
-                                    recipe=recipe).delete()
-            return Response([
+        Shopping.objects.filter(user=self.request.user,
+                                recipe=recipe).delete()
+        return Response([
                     'Рецепт успешно удален из списка покупок'],
                     status=status.HTTP_204_NO_CONTENT)
-        raise ValidationError([
-                'Рецепта нет в списке покупок'])
 
 
 class CreateDeleteFavorite(mixins.CreateModelMixin, mixins.DestroyModelMixin,
@@ -74,15 +70,11 @@ class CreateDeleteFavorite(mixins.CreateModelMixin, mixins.DestroyModelMixin,
         из списка избранного
         """
         recipe = get_object_or_404(Recipe, id=self.kwargs.get('recipe_id'))
-        if Favorite.objects.filter(user=self.request.user,
-                                   recipe=recipe).exists():
-            Favorite.objects.filter(user=self.request.user,
-                                    recipe=recipe).delete()
-            return Response([
+        Favorite.objects.filter(user=self.request.user,
+                                recipe=recipe).delete()
+        return Response([
                     'Рецепт успешно удален из избранного'],
                     status=status.HTTP_204_NO_CONTENT)
-        raise ValidationError([
-                'Рецепта нет в избранном'])
 
 
 class CreateDeleteSubscriptions(mixins.CreateModelMixin,
@@ -114,16 +106,12 @@ class CreateDeleteSubscriptions(mixins.CreateModelMixin,
         """
         author = get_object_or_404(
             User, id=self.kwargs.get('follow_id'))
-        if Subscription.objects.filter(user=self.request.user,
-                                       author=author).exists():
-            Subscription.objects.filter(user=self.request.user,
-                                        author=author
-                                        ).delete()
-            return Response([
+        Subscription.objects.filter(user=self.request.user,
+                                    author=author
+                                    ).delete()
+        return Response([
                     'Автор успешно удален из подписок'],
                     status=status.HTTP_204_NO_CONTENT)
-        raise ValidationError([
-                'Автора нет в подписках'])
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -179,11 +167,11 @@ class SubscriptionsUserViewSet(viewsets.ModelViewSet):
                 'Метод запрещен'])
 
 
-class SubscriptionsCreateViewSet(viewsets.ModelViewSet):
+class SubscriptionsCreateViewSet(CreateDeleteSubscriptions):
     serializer_class = SubscriptionsUserSerializer
     queryset = Subscription.objects.all()
 
 
-class ShoppingCartViewSet(viewsets.ModelViewSet):
+class ShoppingCartViewSet(CreateDeleteShopping):
     serializer_class = FavoriteSerializer
     queryset = Shopping.objects.all()
