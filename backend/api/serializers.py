@@ -1,9 +1,9 @@
-from app.models import (Favorite, Ingredient, Recipe, RecipeIngredientAmount,
-                        Shopping, Subscription, Tag)
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.models import User
+from app.models import (Favorite, Ingredient, Recipe, RecipeIngredientAmount,
+                        Shopping, Subscription, Tag)
 
 
 class CustomUserSerializer(UserSerializer):
@@ -89,6 +89,11 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     'ingredients': 'Ингредиенты не уникальны!'
                 })
+            amount = ingredient["amount"]
+            if int(ingredient["amount"]) < 10:
+                raise serializers.ValidationError(
+                    {"ingredients": ("Количество не может быть меньше 0")}
+                )
             ingredients_list.append(ingredient_id)
         tags = data['tags']
         tags_list = []
