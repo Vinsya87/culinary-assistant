@@ -132,4 +132,4 @@ dmypy.json
 .idea
 
 # my ignore
-.vscode
+.vscode/
