@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: vinsteam/backend-food:v1.1
+    image: vinsteam/front-food:v1.1
     restart: always
     volumes:
       - ./frontend/:/app/result_build/
