@@ -2,6 +2,7 @@ from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.models import User
+
 from app.models import (Favorite, Ingredient, Recipe, RecipeIngredientAmount,
                         Shopping, Subscription, Tag)
 
@@ -86,30 +87,26 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
             if ingredient_id in ingredients_list:
-                raise serializers.ValidationError({
-                    'ingredients': 'Ингредиенты не уникальны!'
-                })
-            amount = ingredient["amount"]
-            if int(ingredient["amount"]) < 10:
+                name = Ingredient.objects.get(pk=ingredient['id']).name
                 raise serializers.ValidationError(
-                    {"ingredients": ("Количество не может быть меньше 0")}
+                    f'{name} уже есть в ингредиентах')
+            if int(ingredient["amount"]) < 1:
+                raise serializers.ValidationError(
+                    "Количество не может быть меньше 1"
                 )
             ingredients_list.append(ingredient_id)
         tags = data['tags']
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                raise serializers.ValidationError({
-                    'tags': 'Тэги не уникальны!'
-                })
+                raise serializers.ValidationError('Тэги не уникальны!')
             tags_list.append(tag)
 
         cooking_time = data['cooking_time']
         if int(cooking_time) <= 0:
-            raise serializers.ValidationError({
-                'cooking_time':
+            raise serializers.ValidationError(
                 'Проверьте время приготовления рецепта! (меньше 1)'
-            })
+            )
         return data
 
     def create_ingredients(self, ingredients, recipe):
@@ -275,9 +272,8 @@ class SubscriptionsUserSerializer(serializers.ModelSerializer):
         return RecipesSer(recipe, many=True).data
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
         return Subscription.objects.filter(
-            user=request.user, author=obj.author).exists()
+            user=obj.user, author=obj.author).exists()
 
 
 class SubscriptionsCreateSerializer(serializers.ModelSerializer):

@@ -126,6 +126,7 @@ class RecipeIngredientAmount(models.Model):
 
 
 class Favorite(models.Model):
+    """Добавление рецепта в избранное"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
