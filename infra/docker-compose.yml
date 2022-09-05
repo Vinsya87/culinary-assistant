@@ -9,7 +9,7 @@ services:
   # Примеры наполнения файла .env представлены в README и .env.template
 
   web:
-    image: vinsteam/backend-food:v1.2
+    image: vinsteam/backend-food:v1.3
     # build:
     #   context: ../backend
     restart: always

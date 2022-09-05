@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
-
 from users.validators import UsernameValidator
 
 USER = 'user'
@@ -28,7 +27,7 @@ class User(AbstractUser):
     role = models.CharField(
         'Роль пользователя',
         choices=roles,
-        max_length=max(len(role[1]) for role in roles), default=ADMIN
+        max_length=max(len(role[1]) for role in roles), default=USER
     )
 
     REQUIRED_FIELDS = ['email']

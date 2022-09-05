@@ -9,6 +9,7 @@ from .models import (Favorite, Ingredient, Recipe, RecipeIngredientAmount,
 class RecipeAmountAdmin(admin.TabularInline):
     model = RecipeIngredientAmount
     extra = 1
+    min_num = 1
 
 
 class RecipesAdmin(admin.ModelAdmin):
@@ -37,7 +38,7 @@ class RecipesAdmin(admin.ModelAdmin):
       'pub_date', 'favorite_recipe')
     search_fields = ('name', 'author__username', 'tags__name')
     list_filter = ('author',)
-    filter_horizontal = ['tags']
+    # filter_horizontal = ['tags']
     inlines = (RecipeAmountAdmin,)
     empty_value_display = '-пусто-'
 
