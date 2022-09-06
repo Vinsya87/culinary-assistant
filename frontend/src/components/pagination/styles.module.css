@@ -18,9 +18,9 @@
 }
 
 .paginationItemActive {
-  color: #FFF;
-  background-color: #4A61DD;
-  cursor: default;
+  background: #dadff1;
+  color: #262626;
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 .arrow {
@@ -37,6 +37,6 @@
 }
 
 .arrowDisabled {
-  opacity: .3;
+  opacity: 0.3;
   cursor: not-allowed;
 }

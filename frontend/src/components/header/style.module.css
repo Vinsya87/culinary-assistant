@@ -3,6 +3,8 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 30px;
+  background-image: linear-gradient(to left,#deb887,#ecd6b9);
+  box-shadow: 0px 16px 8px -10px rgb(0 0 0 / 35%);
 }
 
 .headerContent {

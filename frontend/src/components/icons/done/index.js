@@ -11,7 +11,7 @@ function SvgVector2(props) {
     >
       <path
         d="M1 6l4.667 5L15 1"
-        stroke={props.color || "#4A61DD"}
+        stroke={props.color || "#262626"}
         strokeWidth={2}
         strokeLinecap="round"
         strokeLinejoin="round"
